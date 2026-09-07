@@ -32,6 +32,9 @@ def run_demo(simulation_dir: str = "simulation") -> None:
     print("\n=== AEGISCORE AUDIT TRAIL ===")
     for idx, item in enumerate(reasoner.action_log, start=1):
         print(f"{idx:02d}. {item}")
+    termination = "containment condition reached" if memory.status == "contained" else "max steps reached"
+    print(f"\nFinal memory status: {memory.status}")
+    print(f"Run termination: {termination}")
 
 
 __all__ = ["run_demo"]

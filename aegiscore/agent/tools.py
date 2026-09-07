@@ -68,6 +68,7 @@ class SandboxTools:
         attempts[str(pid)] = attempt_count
 
         if attempt_count == 1:
+            self._save_state(state)
             return ToolResult(False, "permission denied", {"pid": pid, "attempt": attempt_count})
 
         target = next((p for p in state.get("processes", []) if p["pid"] == pid), None)
@@ -78,7 +79,7 @@ class SandboxTools:
 
         if target.get("name") == "hidden_shell":
             respawn = next((p for p in state["processes"] if p["pid"] == 4343), None)
-            if respawn and not respawn.get("active"):
+            if respawn and respawn["pid"] != pid and not respawn.get("active"):
                 respawn["active"] = True
                 self._save_state(state)
                 return ToolResult(True, "killed but respawned", {"killed_pid": pid, "respawned_pid": 4343})

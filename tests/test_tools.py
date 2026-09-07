@@ -35,3 +35,28 @@ def test_kill_process_first_attempt_fails(tmp_path: Path) -> None:
     result = tools.kill_process(4242)
     assert not result.ok
     assert "permission denied" in result.message
+
+
+def test_kill_process_second_attempt_succeeds(tmp_path: Path) -> None:
+    _state(tmp_path / "sim_state.json")
+    tools = SandboxTools(tmp_path)
+
+    first = tools.kill_process(4242)
+    second = tools.kill_process(4242)
+
+    assert first.ok is False
+    assert second.ok is True
+    assert second.message == "killed but respawned"
+
+
+def test_respawn_pid_second_attempt_does_not_self_respawn(tmp_path: Path) -> None:
+    _state(tmp_path / "sim_state.json")
+    tools = SandboxTools(tmp_path)
+
+    tools.kill_process(4242)
+    tools.kill_process(4242)
+    tools.kill_process(4343)
+    second = tools.kill_process(4343)
+
+    assert second.ok is True
+    assert second.message == "Process killed"
