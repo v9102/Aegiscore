@@ -27,11 +27,14 @@ def run_demo(simulation_dir: str = "simulation") -> None:
     evaluator = MitigationEvaluator(sim_path)
 
     reasoner = AgentReasoner(provider=build_provider(), tools=tools, evaluator=evaluator, memory=memory)
-    reasoner.run(observations=observations, max_steps=5)
+    reasoner.run(observations=observations, max_steps=10)
 
     print("\n=== AEGISCORE AUDIT TRAIL ===")
     for idx, item in enumerate(reasoner.action_log, start=1):
         print(f"{idx:02d}. {item}")
+    termination = "containment condition reached" if memory.status == "contained" else "max steps reached"
+    print(f"\nFinal memory status: {memory.status}")
+    print(f"Run termination: {termination}")
 
 
 __all__ = ["run_demo"]

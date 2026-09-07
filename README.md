@@ -64,5 +64,5 @@ The reasoner maintains `action_log` entries for:
 ## Safety notes
 
 - Sandbox-only intent; non-production usage.
-- No real infrastructure operations are performed.
-- Command execution is constrained by a strict allowlist helper in `aegiscore/agent/tools.py`.
+- `kill_process` and `block_ip` are simulated by mutating local `simulation/sim_state.json` state, not by killing host processes or changing host firewall rules.
+- Command execution is constrained by a strict allowlist helper in `aegiscore/agent/tools.py`; only safe local commands (`cat`, `echo`, `true`) are permitted.
